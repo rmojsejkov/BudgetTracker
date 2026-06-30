@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Мой бюджет</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#157A5B" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Мой бюджет" />
+    <link rel="apple-touch-icon" href="icons/icon-180.png" />
+    <link rel="icon" type="image/png" href="icons/icon-192.png" />
+    <style>
+      :root {
+        --bg: #f4f5f3;
+        --surface: #ffffff;
+        --ink: #14171c;
+        --sub: #6a7180;
+        --line: #e4e6e2;
+        --good: #157a5b;
+        --goodBg: #e6f2ec;
+        --warn: #b8730e;
+        --over: #bc3f38;
+        --accent: #157a5b;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 560px;
+        margin: 0 auto;
+        padding: 20px 16px 48px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 18px;
+        gap: 12px;
+      }
+      .kicker {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        margin: 4px 0 0;
+        letter-spacing: -0.5px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 14px;
+      }
+      label.fl {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--sub);
+        margin-bottom: 7px;
+        letter-spacing: 0.2px;
+      }
+      input,
+      select {
+        font-family: "Inter", sans-serif;
+        color: var(--ink);
+      }
+      input:focus-visible,
+      select:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .income-row {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        border-bottom: 2px solid var(--line);
+        padding-bottom: 6px;
+        margin-bottom: 18px;
+      }
+      .income-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 30px;
+        font-weight: 700;
+        background: transparent;
+        min-width: 0;
+        padding: 0;
+      }
+      .income-cur {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        color: var(--sub);
+        font-size: 16px;
+      }
+      .summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+      }
+      .stat-label {
+        font-size: 11px;
+        color: var(--sub);
+        margin-bottom: 3px;
+      }
+      .stat-value {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .cur-pick {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px 10px;
+        background: var(--surface);
+      }
+      nav.tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 14px;
+        background: var(--surface);
+        padding: 5px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+      }
+      .tab {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 9px 4px;
+        border-radius: 8px;
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--sub);
+        cursor: pointer;
+      }
+      .tab.active {
+        background: var(--ink);
+        color: #fff;
+      }
+      .suggest {
+        width: 100%;
+        border: 1px dashed var(--accent);
+        background: var(--goodBg);
+        color: var(--good);
+        font-weight: 600;
+        font-size: 13px;
+        padding: 11px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-bottom: 16px;
+        font-family: "Inter", sans-serif;
+      }
+      .cat {
+        margin-bottom: 18px;
+      }
+      .cat-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        gap: 10px;
+      }
+      .cat-name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .cat-tag {
+        font-size: 10px;
+        color: var(--sub);
+        margin-left: 8px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 2px 6px;
+      }
+      .cat-budget-wrap {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .cat-budget {
+        width: 80px;
+        text-align: right;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 6px 8px;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        outline: none;
+      }
+      .cat-cur {
+        font-size: 11px;
+        color: var(--sub);
+      }
+      .track {
+        height: 8px;
+        background: var(--line);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+      .track > div {
+        height: 100%;
+        border-radius: 99px;
+        transition:
+          width 0.4s ease,
+          background 0.2s;
+      }
+      .cat-foot {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        margin-top: 6px;
+      }
+      select.full {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 11px 12px;
+        font-size: 15px;
+        background: var(--surface);
+        margin-bottom: 16px;
+      }
+      .text-input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 11px 12px;
+        font-size: 15px;
+        background: var(--surface);
+        outline: none;
+      }
+      .primary {
+        width: 100%;
+        margin-top: 18px;
+        border: none;
+        background: var(--ink);
+        color: #fff;
+        font-weight: 600;
+        font-size: 15px;
+        padding: 13px;
+        border-radius: 11px;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+      }
+      .exp {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--line);
+        gap: 10px;
+      }
+      .exp-top {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .exp-cat {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--sub);
+      }
+      .exp-sub {
+        font-size: 12px;
+        color: var(--sub);
+        margin-top: 2px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .del {
+        border: none;
+        background: transparent;
+        color: var(--over);
+        font-size: 12px;
+        cursor: pointer;
+        flex-shrink: 0;
+        font-family: "Inter", sans-serif;
+      }
+      .leak-intro {
+        font-size: 14px;
+        color: var(--sub);
+        margin: 0 0 18px;
+        line-height: 1.5;
+      }
+      .leak-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .leak-result {
+        background: var(--ink);
+        border-radius: 14px;
+        padding: 22px 18px;
+        text-align: center;
+        margin: 22px 0 16px;
+        color: #fff;
+      }
+      .leak-big {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1px;
+      }
+      .leak-label {
+        font-size: 13px;
+        color: #b6bdc9;
+        margin-top: 2px;
+      }
+      .leak-row {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 16px;
+        font-size: 13px;
+        color: #d6dbe3;
+      }
+      .leak-note {
+        font-size: 13px;
+        color: var(--sub);
+        line-height: 1.5;
+        margin: 0;
+      }
+      .sync-row {
+        display: flex;
+        gap: 8px;
+      }
+      .sync-input {
+        flex: 1;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 14px;
+        background: var(--surface);
+        outline: none;
+      }
+      .sync-btn {
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        flex-shrink: 0;
+      }
+      .sync-status {
+        font-size: 12px;
+        color: var(--sub);
+        margin-top: 10px;
+      }
+      .sync-hint {
+        font-size: 12px;
+        color: var(--sub);
+        margin: 0 0 12px;
+        line-height: 1.5;
+      }
+      footer {
+        text-align: center;
+        font-size: 11px;
+        color: var(--sub);
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <div class="kicker">Личный бюджет</div>
+          <h1>Куда уходят деньги</h1>
+        </div>
+        <select class="cur-pick" id="cur"></select>
+      </header>
+
+      <section class="card">
+        <label class="fl">Доход в месяц</label>
+        <div class="income-row">
+          <input
+            class="income-input"
+            id="income"
+            type="number"
+            inputmode="decimal"
+            placeholder="0"
+          />
+          <span class="income-cur" id="income-cur">BYN</span>
+        </div>
+        <div class="summary">
+          <div>
+            <div class="stat-label">Распределено</div>
+            <div class="stat-value" id="stat-dist">0</div>
+          </div>
+          <div>
+            <div class="stat-label">Не распределено</div>
+            <div class="stat-value" id="stat-left">0</div>
+          </div>
+          <div>
+            <div class="stat-label">Потрачено в мес.</div>
+            <div class="stat-value" id="stat-spent">0</div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="tabs" id="tabs">
+        <button class="tab active" data-tab="overview">Бюджеты</button>
+        <button class="tab" data-tab="add">Добавить трату</button>
+        <button class="tab" data-tab="leak">Калькулятор утечки</button>
+      </nav>
+
+      <div id="tabbody"></div>
+
+      <section class="card">
+        <label class="fl">Синхронизация между устройствами</label>
+        <p class="sync-hint">
+          Придумай секретный код и введи его на каждом устройстве — данные будут
+          общими. Код это и логин, и пароль одновременно, так что сделай его
+          длинным и не делись им.
+        </p>
+        <div class="sync-row">
+          <input
+            class="sync-input"
+            id="sync-code"
+            placeholder="например, roman-budget-9f3kx"
+          />
+          <button class="sync-btn" id="sync-btn">Подключить</button>
+        </div>
+        <div class="sync-status" id="sync-status"></div>
+      </section>
+
+      <footer>
+        Локальная копия хранится в этом браузере; с синхронизацией данные общие
+        на всех устройствах.
+      </footer>
+    </div>
+
+    <script>
+      /* ====== НАСТРОЙКА БЭКЕНДА (Supabase) ======
+   Вставь сюда свои значения из Supabase → Project Settings → API.
+   Пока они пустые, синхронизация выключена, а приложение работает локально. */
+      const SUPABASE_URL = "https://gdfjzrahdxahpenpnwlg.supabase.co"; // напр. https://abcdxyz.supabase.co
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkZmp6cmFoZHhhaHBlbnBud2xnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NDIxNDYsImV4cCI6MjA5ODQxODE0Nn0.vKzu2atedaqfoSeFY0z_PPY8UkuGQvb3g6F1XhW9sAg"; // публичный anon key
+      /* =========================================== */
+
+      const C = { good: "#157A5B", warn: "#B8730E", over: "#BC3F38" };
+      const KEY = "budget-data-v1";
+      const CODE_KEY = "budget-sync-code";
+      const TYPE_LABELS = {
+        need: "Нужное",
+        debt: "Кредит",
+        want: "Хочу",
+        save: "Накопления",
+      };
+      const CURRENCIES = ["BYN", "RUB", "USD", "EUR", "PLN"];
+      const DEFAULT_DATA = {
+        currency: "BYN",
+        income: 0,
+        updatedAt: "",
+        categories: [
+          { id: "rent", name: "Жильё и связь", budget: 0, type: "need" },
+          { id: "food", name: "Еда (дом)", budget: 0, type: "need" },
+          {
+            id: "credit",
+            name: "Кредиты / рассрочки",
+            budget: 0,
+            type: "debt",
+          },
+          { id: "fun", name: "Кофе и мелочи", budget: 0, type: "want" },
+          { id: "games", name: "Игры / развлечения", budget: 0, type: "want" },
+          { id: "save", name: "Накопления", budget: 0, type: "save" },
+        ],
+        expenses: [],
+        habit: { name: "Кофе", perDay: 5, daysPerWeek: 5 },
+      };
+
+      function coerce(p) {
+        const d = Object.assign({}, DEFAULT_DATA, p || {});
+        if (!Array.isArray(d.categories) || !d.categories.length)
+          d.categories = JSON.parse(JSON.stringify(DEFAULT_DATA.categories));
+        if (!d.categories.some((c) => c.type === "debt")) {
+          const i = d.categories.findIndex((c) => c.type === "want");
+          const credit = {
+            id: "credit",
+            name: "Кредиты / рассрочки",
+            budget: 0,
+            type: "debt",
+          };
+          if (i === -1) d.categories.push(credit);
+          else d.categories.splice(i, 0, credit);
+        }
+        if (!Array.isArray(d.expenses)) d.expenses = [];
+        if (!d.habit) d.habit = Object.assign({}, DEFAULT_DATA.habit);
+        return d;
+      }
+      function load() {
+        try {
+          const raw = localStorage.getItem(KEY);
+          if (raw) return coerce(JSON.parse(raw));
+        } catch (e) {}
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+      function save() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(state));
+        } catch (e) {}
+      }
+      function markChanged() {
+        state.updatedAt = new Date().toISOString();
+        save();
+        schedulePush();
+      }
+
+      let state = load();
+      let tab = "overview";
+      let draft = { cat: "fun", amount: "", note: "" };
+      let syncCode = "";
+      let syncActive = false;
+      let pushTimer = null;
+
+      const uid = () => Math.random().toString(36).slice(2, 9);
+      const num = (v) => Number(v) || 0;
+      function fmt(n) {
+        return (
+          Math.round(num(n)).toLocaleString("ru-RU") + " " + state.currency
+        );
+      }
+
+      function spentByCat() {
+        const now = new Date(),
+          mk = now.getFullYear() + "-" + now.getMonth(),
+          out = {};
+        state.expenses.forEach((e) => {
+          const d = new Date(e.date);
+          if (d.getFullYear() + "-" + d.getMonth() === mk)
+            out[e.cat] = (out[e.cat] || 0) + num(e.amount);
+        });
+        return out;
+      }
+      function totalBudget() {
+        return state.categories.reduce((s, c) => s + num(c.budget), 0);
+      }
+
+      function updateSummary() {
+        const spent = spentByCat();
+        const totSpent = Object.values(spent).reduce((s, v) => s + v, 0);
+        const tb = totalBudget(),
+          left = num(state.income) - tb;
+        document.getElementById("stat-dist").textContent = fmt(tb);
+        const ls = document.getElementById("stat-left");
+        ls.textContent = fmt(left);
+        ls.style.color = left < 0 ? C.over : C.good;
+        document.getElementById("stat-spent").textContent = fmt(totSpent);
+      }
+      function rowToneWidth(spent, budget) {
+        const pct = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
+        const over = budget > 0 && spent > budget;
+        return { pct, over, tone: over ? C.over : pct > 80 ? C.warn : C.good };
+      }
+      function updateRow(id) {
+        const c = state.categories.find((x) => x.id === id);
+        if (!c) return;
+        const spent = spentByCat()[id] || 0,
+          budget = num(c.budget);
+        const { pct, over, tone } = rowToneWidth(spent, budget);
+        const bar = document.getElementById("bar-" + id);
+        if (bar) {
+          bar.style.width = pct + "%";
+          bar.style.background = tone;
+        }
+        const foot = document.getElementById("foot-" + id);
+        if (foot) {
+          const col = over ? C.over : "var(--sub)";
+          foot.innerHTML =
+            '<span style="color:' +
+            col +
+            '">' +
+            fmt(spent) +
+            " из " +
+            fmt(budget) +
+            "</span>" +
+            (budget > 0
+              ? '<span style="color:' +
+                col +
+                '">' +
+                (over
+                  ? "перерасход " + fmt(spent - budget)
+                  : "осталось " + fmt(budget - spent)) +
+                "</span>"
+              : "<span></span>");
+        }
+      }
+
+      function renderTab() {
+        const body = document.getElementById("tabbody");
+        if (tab === "overview") body.innerHTML = overviewHTML();
+        else if (tab === "add") body.innerHTML = addHTML();
+        else body.innerHTML = leakHTML();
+        wireTab();
+      }
+      function overviewHTML() {
+        const inc = num(state.income),
+          spent = spentByCat();
+        let rows = "";
+        state.categories.forEach((c) => {
+          const sp = spent[c.id] || 0,
+            b = num(c.budget);
+          const { pct, over, tone } = rowToneWidth(sp, b);
+          const col = over ? C.over : "var(--sub)";
+          rows +=
+            '<div class="cat"><div class="cat-head">' +
+            '<div><span class="cat-name">' +
+            esc(c.name) +
+            '</span><span class="cat-tag">' +
+            TYPE_LABELS[c.type] +
+            "</span></div>" +
+            '<div class="cat-budget-wrap"><input class="cat-budget" data-budget="' +
+            c.id +
+            '" type="number" inputmode="decimal" placeholder="0" value="' +
+            (c.budget || "") +
+            '"><span class="cat-cur">' +
+            state.currency +
+            "</span></div>" +
+            '</div><div class="track"><div id="bar-' +
+            c.id +
+            '" style="width:' +
+            pct +
+            "%;background:" +
+            tone +
+            '"></div></div>' +
+            '<div class="cat-foot" id="foot-' +
+            c.id +
+            '"><span style="color:' +
+            col +
+            '">' +
+            fmt(sp) +
+            " из " +
+            fmt(b) +
+            "</span>" +
+            (b > 0
+              ? '<span style="color:' +
+                col +
+                '">' +
+                (over
+                  ? "перерасход " + fmt(sp - b)
+                  : "осталось " + fmt(b - sp)) +
+                "</span>"
+              : "<span></span>") +
+            "</div></div>";
+        });
+        const btn =
+          inc > 0
+            ? '<button class="suggest" id="suggest">Разбить по правилу 50 / 30 / 20</button>'
+            : "";
+        return '<section class="card">' + btn + rows + "</section>";
+      }
+      function addHTML() {
+        const opts = state.categories
+          .map(
+            (c) =>
+              '<option value="' +
+              c.id +
+              '"' +
+              (c.id === draft.cat ? " selected" : "") +
+              ">" +
+              esc(c.name) +
+              "</option>",
+          )
+          .join("");
+        let recent = "";
+        if (state.expenses.length) {
+          recent =
+            '<div style="margin-top:24px"><div class="fl">Последние траты</div>';
+          state.expenses.slice(0, 12).forEach((e) => {
+            const cat = state.categories.find((c) => c.id === e.cat);
+            const d = new Date(e.date);
+            const date = d.toLocaleDateString("ru-RU", {
+              day: "numeric",
+              month: "short",
+            });
+            recent +=
+              '<div class="exp"><div style="min-width:0"><div class="exp-top">' +
+              fmt(e.amount) +
+              '<span class="exp-cat">' +
+              (cat ? esc(cat.name) : "—") +
+              "</span></div>" +
+              '<div class="exp-sub">' +
+              date +
+              (e.note ? " · " + esc(e.note) : "") +
+              '</div></div><button class="del" data-del="' +
+              e.id +
+              '">удалить</button></div>';
+          });
+          recent += "</div>";
+        }
+        return (
+          '<section class="card"><label class="fl">Категория</label><select class="full" id="d-cat">' +
+          opts +
+          "</select>" +
+          '<label class="fl">Сумма</label><div class="income-row"><input class="income-input" id="d-amount" type="number" inputmode="decimal" placeholder="0" value="' +
+          esc(draft.amount) +
+          '"><span class="income-cur">' +
+          state.currency +
+          "</span></div>" +
+          '<label class="fl">Заметка (необязательно)</label><input class="text-input" id="d-note" placeholder="например, латте у работы" value="' +
+          esc(draft.note) +
+          '">' +
+          '<button class="primary" id="add-exp">Записать трату</button>' +
+          recent +
+          "</section>"
+        );
+      }
+      function leakHTML() {
+        const h = state.habit,
+          m = num(h.perDay) * num(h.daysPerWeek) * 4.33,
+          y = m * 12;
+        return (
+          '<section class="card"><p class="leak-intro">Посчитай реальную цену ежедневной привычки. Маленькая сумма в день складывается в заметные деньги за год.</p>' +
+          '<label class="fl">Что за привычка</label><input class="text-input" id="h-name" value="' +
+          esc(h.name) +
+          '">' +
+          '<div class="leak-grid"><div><label class="fl">Цена за раз (' +
+          state.currency +
+          ')</label><input class="text-input" id="h-per" type="number" inputmode="decimal" value="' +
+          (h.perDay || "") +
+          '"></div>' +
+          '<div><label class="fl">Раз в неделю</label><input class="text-input" id="h-days" type="number" inputmode="decimal" value="' +
+          (h.daysPerWeek || "") +
+          '"></div></div>' +
+          '<div class="leak-result"><div class="leak-big" id="leak-year">' +
+          fmt(y) +
+          '</div><div class="leak-label">в год на «<span id="leak-name">' +
+          esc(h.name || "привычку") +
+          "</span>»</div>" +
+          '<div class="leak-row"><span id="leak-month">' +
+          fmt(m) +
+          ' в месяц</span><span id="leak-q">' +
+          fmt(m * 3) +
+          " в квартал</span></div></div>" +
+          '<p class="leak-note">Смысл не в том, чтобы отказаться. Смысл в том, чтобы это было осознанным выбором внутри категории «Хочу», а не незаметной утечкой.</p></section>'
+        );
+      }
+      function esc(s) {
+        return String(s == null ? "" : s).replace(
+          /[&<>"]/g,
+          (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[m],
+        );
+      }
+
+      function wireTab() {
+        if (tab === "overview") {
+          const s = document.getElementById("suggest");
+          if (s) s.onclick = applySuggestion;
+          document.querySelectorAll("[data-budget]").forEach((inp) => {
+            inp.oninput = () => {
+              const id = inp.getAttribute("data-budget");
+              const c = state.categories.find((x) => x.id === id);
+              c.budget = inp.value;
+              markChanged();
+              updateRow(id);
+              updateSummary();
+            };
+          });
+        } else if (tab === "add") {
+          document.getElementById("d-cat").onchange = (e) =>
+            (draft.cat = e.target.value);
+          document.getElementById("d-amount").oninput = (e) =>
+            (draft.amount = e.target.value);
+          document.getElementById("d-note").oninput = (e) =>
+            (draft.note = e.target.value);
+          document.getElementById("add-exp").onclick = addExpense;
+          document.querySelectorAll("[data-del]").forEach((b) => {
+            b.onclick = () => {
+              state.expenses = state.expenses.filter(
+                (x) => x.id !== b.getAttribute("data-del"),
+              );
+              markChanged();
+              renderTab();
+              updateSummary();
+            };
+          });
+        } else {
+          const upd = () => {
+            const m =
+                num(state.habit.perDay) * num(state.habit.daysPerWeek) * 4.33,
+              y = m * 12;
+            document.getElementById("leak-year").textContent = fmt(y);
+            document.getElementById("leak-month").textContent =
+              fmt(m) + " в месяц";
+            document.getElementById("leak-q").textContent =
+              fmt(m * 3) + " в квартал";
+            document.getElementById("leak-name").textContent =
+              state.habit.name || "привычку";
+          };
+          document.getElementById("h-name").oninput = (e) => {
+            state.habit.name = e.target.value;
+            markChanged();
+            upd();
+          };
+          document.getElementById("h-per").oninput = (e) => {
+            state.habit.perDay = e.target.value;
+            markChanged();
+            upd();
+          };
+          document.getElementById("h-days").oninput = (e) => {
+            state.habit.daysPerWeek = e.target.value;
+            markChanged();
+            upd();
+          };
+        }
+      }
+      function applySuggestion() {
+        const inc = num(state.income),
+          suggest = { need: inc * 0.5, want: inc * 0.3, save: inc * 0.2 };
+        const bucketOf = (t) => (t === "debt" ? "need" : t),
+          byBucket = { need: [], want: [], save: [] };
+        state.categories.forEach((c) => byBucket[bucketOf(c.type)].push(c));
+        state.categories = state.categories.map((c) => {
+          const b = bucketOf(c.type),
+            g = byBucket[b];
+          return Object.assign({}, c, {
+            budget: g.length ? Math.round(suggest[b] / g.length) : 0,
+          });
+        });
+        markChanged();
+        renderTab();
+        updateSummary();
+      }
+      function addExpense() {
+        const amt = parseFloat(draft.amount);
+        if (!amt || amt <= 0) return;
+        state.expenses.unshift({
+          id: uid(),
+          cat: draft.cat,
+          amount: amt,
+          note: (draft.note || "").trim(),
+          date: new Date().toISOString(),
+        });
+        draft.amount = "";
+        draft.note = "";
+        markChanged();
+        renderTab();
+        updateSummary();
+      }
+
+      /* ---------- backend sync ---------- */
+      function configOK() {
+        return !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+      }
+      function setStatus(msg, err) {
+        const el = document.getElementById("sync-status");
+        el.textContent = msg;
+        el.style.color = err ? C.over : "var(--sub)";
+      }
+      function updateSyncUI() {
+        const btn = document.getElementById("sync-btn"),
+          input = document.getElementById("sync-code");
+        if (syncActive) {
+          btn.textContent = "Отключить";
+          input.disabled = true;
+          input.style.opacity = 0.6;
+        } else {
+          btn.textContent = "Подключить";
+          input.disabled = false;
+          input.style.opacity = 1;
+        }
+      }
+      async function rpc(fn, body) {
+        const r = await fetch(SUPABASE_URL + "/rest/v1/rpc/" + fn, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: "Bearer " + SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify(body),
+        });
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      }
+      function reRenderAll() {
+        document.getElementById("income").value = state.income || "";
+        document.getElementById("cur").value = state.currency;
+        document.getElementById("income-cur").textContent = state.currency;
+        renderTab();
+        updateSummary();
+      }
+      async function pull() {
+        try {
+          const rows = await rpc("get_budget", { p_code: syncCode });
+          if (rows && rows.length) {
+            const remote = rows[0];
+            const rT = new Date(remote.updated_at).getTime();
+            const lT = new Date(state.updatedAt || 0).getTime();
+            if (!state.updatedAt || rT > lT) {
+              state = coerce(remote.data);
+              save();
+              reRenderAll();
+              setStatus("синхронизировано");
+            } else {
+              await push();
+            }
+          } else {
+            await push();
+          }
+        } catch (e) {
+          setStatus("нет связи с сервером — работаю локально", true);
+        }
+      }
+      function schedulePush() {
+        if (!syncActive) return;
+        clearTimeout(pushTimer);
+        setStatus("сохраняю…");
+        pushTimer = setTimeout(push, 800);
+      }
+      async function push() {
+        if (!syncActive || !syncCode) return;
+        try {
+          const ts = await rpc("save_budget", {
+            p_code: syncCode,
+            p_data: state,
+          });
+          if (ts) {
+            state.updatedAt = ts;
+            save();
+          }
+          setStatus("синхронизировано");
+        } catch (e) {
+          setStatus("ошибка сети — сохранено локально", true);
+        }
+      }
+      function connectSync() {
+        syncCode = document.getElementById("sync-code").value.trim();
+        if (!syncCode) {
+          setStatus("введите код", true);
+          return;
+        }
+        if (!configOK()) {
+          setStatus(
+            "бэкенд не настроен — впиши URL и ключ в начало файла",
+            true,
+          );
+          return;
+        }
+        localStorage.setItem(CODE_KEY, syncCode);
+        syncActive = true;
+        updateSyncUI();
+        setStatus("подключаюсь…");
+        pull();
+      }
+      function disconnectSync() {
+        syncActive = false;
+        syncCode = "";
+        localStorage.removeItem(CODE_KEY);
+        updateSyncUI();
+        setStatus("отключено");
+      }
+
+      /* ---------- init ---------- */
+      function initShell() {
+        const cur = document.getElementById("cur");
+        cur.innerHTML = CURRENCIES.map(
+          (c) =>
+            '<option value="' +
+            c +
+            '"' +
+            (c === state.currency ? " selected" : "") +
+            ">" +
+            c +
+            "</option>",
+        ).join("");
+        cur.onchange = (e) => {
+          state.currency = e.target.value;
+          markChanged();
+          document.getElementById("income-cur").textContent = state.currency;
+          renderTab();
+          updateSummary();
+        };
+
+        const inc = document.getElementById("income");
+        inc.value = state.income || "";
+        document.getElementById("income-cur").textContent = state.currency;
+        inc.oninput = (e) => {
+          state.income = e.target.value;
+          markChanged();
+          updateSummary();
+          if (tab === "overview") renderTab();
+        };
+
+        document.querySelectorAll("#tabs .tab").forEach((b) => {
+          b.onclick = () => {
+            tab = b.getAttribute("data-tab");
+            document
+              .querySelectorAll("#tabs .tab")
+              .forEach((x) => x.classList.toggle("active", x === b));
+            renderTab();
+          };
+        });
+
+        document.getElementById("sync-btn").onclick = () => {
+          syncActive ? disconnectSync() : connectSync();
+        };
+
+        renderTab();
+        updateSummary();
+        updateSyncUI();
+
+        const saved = localStorage.getItem(CODE_KEY);
+        if (!configOK()) {
+          setStatus(
+            "добавь URL и anon key Supabase в начало файла, чтобы включить синхронизацию",
+          );
+        } else if (saved) {
+          document.getElementById("sync-code").value = saved;
+          syncCode = saved;
+          syncActive = true;
+          updateSyncUI();
+          setStatus("подключаюсь…");
+          pull();
+        } else {
+          setStatus("не подключено");
+        }
+      }
+      initShell();
+
+      /* ---------- PWA: офлайн + авто-досинхронизация ---------- */
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch(() => {});
+        });
+      }
+      window.addEventListener("online", () => {
+        if (syncActive) {
+          setStatus("связь вернулась, синхронизирую…");
+          pull();
+        }
+      });
+      window.addEventListener("offline", () => {
+        if (syncActive) setStatus("оффлайн — изменения сохраняются локально");
+      });
+    </script>
+  </body>
+</html>
